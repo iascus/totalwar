@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pandas as pd
 
 #tsv_path = r'D:\Steam\steamapps\common\Total War WARHAMMER II\data\db'
@@ -7,11 +8,16 @@ tsv_path = r'data'
 
 
 def read_tsv(filename):
-    return pd.read_csv(
+    df = pd.read_csv(
         os.path.join(tsv_path, filename),
-        skiprows=1,
+        # skiprows=1,
         sep='\t',
-    )
+    ).drop(0)
+    float_cols = df.dtypes.loc[df.dtypes == np.float64]
+    for col in float_cols.index:
+        if not df[col].isna().all():
+            df[col] = df[col].astype(int)
+    return df
 
 
 def write_tsv(df, filename, header):
@@ -19,11 +25,18 @@ def write_tsv(df, filename, header):
         df.loc[:, col] = df.loc[:, col].astype(str).str.lower()
 
     with open(os.path.join(tsv_path, filename), 'wb') as buf:
+        df.loc[:0].to_csv(
+            buf,
+            sep='\t',
+            index=False,
+            line_terminator='\n',
+        )
         buf.write(f'{header}\n'.encode('utf8'))
         df.to_csv(
             buf,
             sep='\t',
             index=False,
+            header=False,
             line_terminator='\n',
         )
 
@@ -62,8 +75,8 @@ def main():
     main_units.loc[main_units.unit.isin(engines.unit), ['num_men']] *= 2
     main_units.loc[main_units.unit.isin(non_engines.unit), ['num_men']] *= 2
 
-    write_tsv(land_units, 'land_units_tables.tsv', 'land_units_tables	44')
-    write_tsv(main_units, 'main_units_tables.tsv', 'main_units_tables	36')
+    write_tsv(land_units, 'land_units_tables.tsv', '#land_units_tables;44;db/land_units_tables/!!!@@@ctt_boyz_200')
+    write_tsv(main_units, 'main_units_tables.tsv', '#main_units_tables;36;db/main_units_tables/!!!@@@ctt_boyz_200')
 
 
 if __name__ == '__main__':
