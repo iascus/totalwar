@@ -48,7 +48,9 @@ def main():
         'display.max_columns', 200,
     )
     land_units = read_tsv('land_units_tables_old.tsv')
+    land_units_old = land_units.copy()
     main_units = read_tsv('main_units_tables_old.tsv')
+    main_units_old = main_units.copy()
     print(land_units)
     print(main_units)
 
@@ -74,6 +76,12 @@ def main():
     land_units.loc[land_units.key.isin(non_engines.land_unit), ['num_mounts']] *= 2
     main_units.loc[main_units.unit.isin(engines.unit), ['num_men']] *= 2
     main_units.loc[main_units.unit.isin(non_engines.unit), ['num_men']] *= 2
+
+    land_units = land_units.loc[(land_units_old.fillna('NULL') != land_units.fillna('NULL')).any(axis=1)]
+    main_units = main_units.loc[(main_units_old.fillna('NULL') != main_units.fillna('NULL')).any(axis=1)]
+
+    print(land_units)
+    print(main_units)
 
     write_tsv(land_units, 'land_units_tables.tsv', '#land_units_tables;44;db/land_units_tables/!!!@@@ctt_boyz_200')
     write_tsv(main_units, 'main_units_tables.tsv', '#main_units_tables;36;db/main_units_tables/!!!@@@ctt_boyz_200')
