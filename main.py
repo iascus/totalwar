@@ -3,14 +3,13 @@ import os
 import numpy as np
 import pandas as pd
 
-#tsv_path = r'D:\Steam\steamapps\common\Total War WARHAMMER II\data\db'
-tsv_path = r'data'
+tsv_in_path = r'data/in/vanilla'
+tsv_out_path = r'data/out'
 
 
 def read_tsv(filename):
     df = pd.read_csv(
-        os.path.join(tsv_path, filename),
-        # skiprows=1,
+        os.path.join(tsv_in_path, filename),
         sep='\t',
     ).drop(0)
     float_cols = df.dtypes.loc[df.dtypes == np.float64]
@@ -24,7 +23,7 @@ def write_tsv(df, filename, header):
     for col in df.columns[df.dtypes == 'bool']:
         df.loc[:, col] = df.loc[:, col].astype(str).str.lower()
 
-    with open(os.path.join(tsv_path, filename), 'wb') as buf:
+    with open(os.path.join(tsv_out_path, filename), 'wb') as buf:
         df.loc[:0].to_csv(
             buf,
             sep='\t',
@@ -47,9 +46,9 @@ def main():
         'display.max_rows', 500,
         'display.max_columns', 200,
     )
-    land_units = read_tsv('land_units_tables_old.tsv')
+    land_units = read_tsv('land_units_tables.tsv')
     land_units_old = land_units.copy()
-    main_units = read_tsv('main_units_tables_old.tsv')
+    main_units = read_tsv('main_units_tables.tsv')
     main_units_old = main_units.copy()
     print(land_units)
     print(main_units)
@@ -83,8 +82,8 @@ def main():
     print(land_units)
     print(main_units)
 
-    write_tsv(land_units, 'land_units_tables.tsv', '#land_units_tables;44;db/land_units_tables/!!!@@@ctt_boyz_200')
-    write_tsv(main_units, 'main_units_tables.tsv', '#main_units_tables;36;db/main_units_tables/!!!@@@ctt_boyz_200')
+    write_tsv(land_units, 'land_units_tables.tsv', '#land_units_tables;53;db/land_units_tables/!!!@@@units_200')
+    write_tsv(main_units, 'main_units_tables.tsv', '#main_units_tables;7;db/main_units_tables/!!!@@@units_200')
 
 
 if __name__ == '__main__':
