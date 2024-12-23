@@ -148,6 +148,6 @@ if __name__ == '__main__':
         'display.max_rows', 500,
         'display.max_columns', 200,
     )
-    # reload_input_files()
+    reload_input_files()
     double_unit_sizes()
     write_to_pack()
